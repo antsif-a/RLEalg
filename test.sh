@@ -1,4 +1,5 @@
 #!/bin/sh
+mkdir -p build && cmake . -Bbuild && cmake --build build
 cd build
 make
 
