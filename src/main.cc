@@ -49,9 +49,7 @@ void decode(ifstream & input, ofstream & output) {
         if (curr == ESCAPE) {
             input.read(reinterpret_cast<char *>(&count), 1);
             input.read(&symbol, 1);
-            for (int i = 0; i < count; i++) {
-                output << symbol;
-            }
+            output << string(count, symbol);
         } else {
             output << curr;
         }
@@ -63,20 +61,26 @@ int main(int argc, char * argv[]) {
         println(stderr, "Usage: {} code|decode <input> <output>", argv[0]);
         return 1;
     }
-    ifstream input(argv[2]);
+    ifstream input(argv[2], ios::binary);
     if (!input.is_open()) {
         println(stderr, "Could not open input file {}", argv[2]);
         return 1;
     }
-    ofstream output(argv[3]);
+    ofstream output(argv[3], ios::binary);
     if (!output.is_open()) {
         println(stderr, "Could not open output file {}", argv[2]);
         return 1;
     }
 
-    if (string_view(argv[1]) == "code") {
+    string_view command_name(argv[1]);
+    if (command_name == "code") {
         encode(input, output);
-    } else {
+    } else if (command_name == "decode") {
         decode(input, output);
+    } else {
+        println(stderr, "Usage: {} code|decode <input> <output>", argv[0]);
+        return 1;
     }
+
+    return 0;
 }
