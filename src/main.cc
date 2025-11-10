@@ -10,9 +10,8 @@ void encode(ifstream & input, ofstream & output) {
     char current, next;
     uint8_t counter = 1;
 
-    if (!input.read(&current, 1)) {
+    if (!input.read(&current, 1))
         return;
-    }
 
     while (input.read(&next, 1)) {
         if (next != current) {
@@ -42,16 +41,16 @@ void encode(ifstream & input, ofstream & output) {
 }
 
 void decode(ifstream & input, ofstream & output) {
-    char curr;
+    char current, symbol;
     uint8_t count;
-    char symbol;
-    while (input.read(&curr, 1)) {
-        if (curr == ESCAPE) {
+    
+    while (input.read(&current, 1)) {
+        if (current == ESCAPE) {
             input.read(reinterpret_cast<char *>(&count), 1);
             input.read(&symbol, 1);
             output << string(count, symbol);
         } else {
-            output << curr;
+            output << current;
         }
     }
 }
