@@ -60,11 +60,13 @@ int main(int argc, char * argv[]) {
         println(stderr, "Usage: {} code|decode <input> <output>", argv[0]);
         return 1;
     }
-    ifstream input(argv[2], ios::binary);
+    ifstream input(argv[2], ios::binary | ios::ate);
     if (!input.is_open()) {
         println(stderr, "Could not open input file {}", argv[2]);
         return 1;
     }
+    int input_size = input.tellg();
+    input.seekg(0);
     ofstream output(argv[3], ios::binary);
     if (!output.is_open()) {
         println(stderr, "Could not open output file {}", argv[2]);
@@ -74,6 +76,10 @@ int main(int argc, char * argv[]) {
     string_view command_name(argv[1]);
     if (command_name == "code") {
         encode(input, output);
+        output.flush();
+        output.seekp(0, ios::end);
+        int output_size = output.tellp();
+        println("Коэффициент сжатия: {}", input_size / output_size);
     } else if (command_name == "decode") {
         decode(input, output);
     } else {
